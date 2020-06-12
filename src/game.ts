@@ -10,12 +10,12 @@ export default class Game {
 
   private turn = 0;
   private state = {
-    board: ' '.repeat(9)
+    board: ' '.repeat(9),
+    symbol: 'X'
   } as State;
   private moveIdCounter = 0;
   private playerById: Map<string, Player> = new Map();
   private playerBySymbol: Map<string, Player> = new Map();
-  private symbolToMove = 'X';
 
   constructor(
     private gameId: number,
@@ -32,7 +32,7 @@ export default class Game {
       this.stop();
     }
 
-    const playerToMove = this.playerBySymbol.get(this.symbolToMove);
+    const playerToMove = this.playerBySymbol.get(this.state.symbol);
     if(!playerToMove) {
       log.error('Could not find the next player. This is unexpected.');
       return;
@@ -83,7 +83,7 @@ export default class Game {
         return;
       }
       // is this the player we expect an action from?
-      if(player.symbol !== this.symbolToMove) {
+      if(player.symbol !== this.state.symbol) {
         return;
       }
       // is this position free?
@@ -105,7 +105,7 @@ export default class Game {
   private doMove(position: number, symbol: string): void {
     this.state.board = this.state.board.substring(0, position) + symbol + this.state.board.substring(position + 1);
     this.turn++;
-    this.symbolToMove = symbol === 'X' ? 'O' : 'X';
+    this.state.symbol = symbol === 'X' ? 'O' : 'X';
   }
 
   private getWinnerSymbol(): string | undefined {
